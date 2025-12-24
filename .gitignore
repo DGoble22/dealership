@@ -1,0 +1,13 @@
+# Master .gitignore
+
+# Ignore the entire IDE folder
+.idea/
+
+# Ignore React dependencies
+frontend/node_modules/
+
+# Ignore your private DB config
+backend/config/db.php
+
+# Ignore Mac junk
+.DS_Store
