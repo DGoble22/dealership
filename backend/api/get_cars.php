@@ -1,5 +1,5 @@
 <?php
-    //Inlcude database class
+    //Include database class
     require_once '../config/db.php';
 
     //set header to JSON
@@ -16,8 +16,8 @@
         $stmt->execute();
 
         //outputs to JSON
-        $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        echo json_encode($cars);
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        echo json_encode(["status" => "success", "data" => $result]);
 
     } catch (PDOException $e) {
         http_response_code(500);

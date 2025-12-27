@@ -10,30 +10,28 @@
         $db = new Database();
         $conn = $db->connection();
 
-        if($conn){
-            // Try to insert a test car
-            $sql = "INSERT INTO Car (make, model, trim, year, miles, price, vin, status, description)
+        // Try to insert a test car
+        $sql = "INSERT INTO Car (make, model, trim, year, miles, price, vin, status, description)
             VALUES (:make, :model, :trim, :year, :miles, :price, :vin, :status, :description)";
 
-            $stmt = $conn->prepare($sql);
-            $stmt->execute([
-                'make' => 'Chevrolet',
-                'model' => 'Tahoe',
-                'trim' => 'PPV',
-                'year' => 2018,
-                'miles' => 206000,
-                'price' => 15000,
-                'vin' => 'xxxxxxxxxxxxxxxxx',
-                'status' => 'available',
-                'description' => 'personal vehicle'
-            ]);
+        $stmt = $conn->prepare($sql);
+        $stmt->execute([
+            'make' => 'Chevrolet',
+            'model' => 'Tahoe',
+            'trim' => 'PPV',
+            'year' => 2018,
+            'miles' => 206000,
+            'price' => 15000,
+            'vin' => 'xxxxxxxxxxxxxxxxx',
+            'status' => 'available',
+            'description' => 'personal vehicle'
+        ]);
 
-            echo json_encode([
-                "status" => "success",
-                "message" => "Car created!",
-                "car_id" => $conn->lastInsertId()
-            ]);
-        }
+        echo json_encode([
+            "status" => "success",
+            "message" => "Car created!",
+            "car_id" => $conn->lastInsertId()
+        ]);
 
     } catch (PDOException $e) {
         http_response_code(500);
