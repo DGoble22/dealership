@@ -1,9 +1,6 @@
 <?php
-    //Include database class
-    require_once '../config/db.php';
-
-    //set header to JSON
-    header("content-type: application/json;");
+    require_once "../config/db.php";
+    require_once "../api_header.php";
 
     try{
         //Database connection

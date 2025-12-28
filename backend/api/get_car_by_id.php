@@ -1,6 +1,6 @@
 <?php
-    include_once "../config/db.php";
-    header("content-type: application/json;");
+    require_once "../config/db.php";
+    require_once "../api_header.php";
 
     try {
         //Database connection
