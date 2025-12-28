@@ -7,7 +7,7 @@
         $db = new Database();
         $conn = $db->connection();
 
-        //Checks url for ID
+        //Input Validation
         if(!isset($_GET["id"])){
             http_response_code(400);
             echo json_encode([
@@ -15,15 +15,20 @@
                 "message" => "Missing id parameter"]);
             exit();
         }
-        $id = (int)$_GET["id"];
+        $id = filter_var($_GET["id"], FILTER_VALIDATE_INT);
+        if($id === false){
+            http_response_code(400);
+            echo json_encode(["status" => "error", "message" => "Invalid id"]);
+            exit;
+        }
 
-        //SQL execution
+        //SQL
         $sql = "SELECT * FROM Car WHERE carid = :id";
         $stmt = $conn->prepare($sql);
         $stmt->execute(['id' => $id]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        //Checks to see if car actually exists
+        //Checks to see if car exists
         if($result){
             echo json_encode(["status" => "success", "data" => $result]);
         } else {

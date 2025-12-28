@@ -7,12 +7,12 @@
         $db = new Database();
         $conn = $db->connection();
 
-        //sql execution
+        //SQL
         $sql = "SELECT * FROM Car";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
 
-        //outputs to JSON
+        //output to JSON
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode(["status" => "success", "data" => $result]);
 
