@@ -1,4 +1,5 @@
 import CarCard from "../components/CarCard.jsx";
+import AddCar from "../components/AddCar.jsx";
 import "./Inventory.css";
 import {useEffect, useState} from "react";
 
@@ -25,6 +26,11 @@ export default function Inventory({ isAdmin }) {
         fetchCars();
     }, []);
 
+    const handleSuccess = () => {
+        setShowForm(false);
+        window.location.reload();
+    }
+
     return (
         <div className="inventory-page">
             <h1>Current Inventory</h1>
@@ -32,7 +38,7 @@ export default function Inventory({ isAdmin }) {
                 <div className="modal-overlay">
                     <div className="modal-content">
                         <button onClick={() => setShowForm(false)}>Close X</button>
-                        <p>Add car</p>
+                        <AddCar onSuccess={handleSuccess} />
                     </div>
                 </div>
             )}
