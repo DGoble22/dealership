@@ -9,7 +9,6 @@ const Navbar = () => {
             <ul className="nav-links">
                 <li><Link to="/">Inventory</Link></li>
                 <li><Link to="/AboutUs">About Us</Link></li>
-                <li><Link to="/AdminPanel">Admin Panel</Link></li>
             </ul>
             <div className="nav-status">
                 <span className="status-indicator"></span> System Online
