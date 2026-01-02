@@ -13,10 +13,10 @@ export default function Inventory({ isAdmin }) {
         const fetchCars = async () => {
             try {
                 const response = await fetch("http://localhost/dealership-project/backend/api/get_cars.php");
-                const json = await response.json();
+                const result = await response.json();
 
-                if (json.status === "success") {
-                    setCars(json.data);
+                if (result.status === "success") {
+                    setCars(result.data);
                 }
             } catch (error) {
                 console.error("Could not get cars:", error);
