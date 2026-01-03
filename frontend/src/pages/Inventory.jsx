@@ -44,14 +44,14 @@ export default function Inventory({ isAdmin }) {
             )}
 
             <div className="car-grid">
+                {cars.map((car) => (
+                    <CarCard key={car.carid} car={car} isAdmin={isAdmin}/>))}
                 {isAdmin && (
                     <div className="car-card add-plus-card" onClick={() => setShowForm(true)}>
                         <div className="plus-icon">+</div>
                         <h3>Add New Listing</h3>
                     </div>
                 )}
-                {cars.map((car) => (
-                    <CarCard key={car.carid} car={car} isAdmin={isAdmin}/>))}
             </div>
         </div>
     );

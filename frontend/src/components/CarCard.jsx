@@ -1,6 +1,9 @@
+import {useNavigate} from "react-router-dom";
 import "./CarCard.css";
 
 const CarCard = ({car, isAdmin}) =>  {
+    const navigate = useNavigate();
+
     const handleDelete = async (e) => {
         e.stopPropagation();
 
@@ -23,21 +26,34 @@ const CarCard = ({car, isAdmin}) =>  {
         }
     };
 
+    const handleCardClick = () => {
+        navigate('/car/'+car.carid);
+    };
+
     return (
-        <div className="car-card">
+        <div className="car-card" onClick={handleCardClick}>
             {isAdmin && (
                 <button className="delete-btn" onClick={handleDelete}>&times;</button>
             )}
-            <div className="car-image">
-                <img src="https://picsum.photos/300/200" alt="Car" />
+
+            {/* Specific class for the card image container */}
+            <div className="car-card-image-wrapper">
+                <img
+                    src="https://picsum.photos/300/200"
+                    alt={`${car.year} ${car.model}`}
+                    className="car-card-image"
+                />
             </div>
-            <div className="car-info">
-                <span className={`status-badge status-${car.status.toLowerCase()}`}>
-                    {car.status}
-                </span>
+
+            {/* Specific class for the card info section */}
+            <div className="car-card-info">
+            <span className={`status-badge status-${car.status.toLowerCase()}`}>
+                {car.status}
+            </span>
                 <h3>{car.year} {car.make} {car.model}</h3>
-                <p className="car-price">${Number(car.price).toLocaleString()}</p>
-                <div className="car-details-row">
+                <p className="car-card-price">${Number(car.price).toLocaleString()}</p>
+
+                <div className="car-card-details-row">
                     <span>{car.trim}</span>
                     <span>{Number(car.miles).toLocaleString()} miles</span>
                 </div>

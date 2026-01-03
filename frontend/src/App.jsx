@@ -4,6 +4,7 @@ import Navbar from "./components/Navbar.jsx";
 //Page Imports
 import Inventory from "./pages/Inventory.jsx";
 import AboutUs from "./pages/AboutUs.jsx";
+import CarDetails from "./pages/CarDetails.jsx";
 import {useState} from "react";
 
 //Main dealership function
@@ -21,6 +22,7 @@ function App() {
                     <Routes>
                         <Route path="/" element={<Inventory isAdmin={isAdmin} />} />
                         <Route path="/AboutUs" element={<AboutUs/>} />
+                        <Route path="/car/:id" element={<CarDetails/>} />
                     </Routes>
                 </main>
             </div>
