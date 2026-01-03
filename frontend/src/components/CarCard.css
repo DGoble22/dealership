@@ -1,73 +1,92 @@
+/* The grid container for all cards */
 .car-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
-    padding: 20px;
+    gap: 25px;
+    padding: 30px;
 }
 
+/* Individual Card Styling */
 .car-card {
-    position: relative; /* Essential for the Delete 'X' to sit in the corner */
-    background: white;
+    position: relative;
+    background: #ffffff;
     border-radius: 12px;
-    overflow: hidden; /* Clips image corners to match the card */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s ease;
-    border: 1px solid #eee;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 1px solid #efefef;
     display: flex;
     flex-direction: column;
+    cursor: pointer;
 }
 
 .car-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
 }
 
-.car-image {
+/* Image Wrapper and Image */
+.car-card-image-wrapper {
     width: 100%;
-    height: 200px;
-    object-fit: cover; /* Keeps Tahoe photos from looking squished */
-    background-color: #f0f0f0; /* Placeholder color if image is missing */
+    height: 200px; /* Locked height for inventory view */
+    background-color: #f7f7f7;
+    overflow: hidden;
 }
 
-.car-info {
-    padding: 15px;
+.car-card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the Tahoe looks right in the small frame */
+    display: block;
+}
+
+/* Info Section - Uses Flexbox (No more grid collisions!) */
+.car-card-info {
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 10px;
+    background: white;
 }
 
-.car-info h3 {
+.car-card-info h3 {
     margin: 0;
     font-size: 1.25rem;
-    color: #333;
+    color: #111;
+    font-weight: 700;
 }
 
-.car-price {
+.car-card-price {
     font-size: 1.4rem;
-    font-weight: bold;
+    font-weight: 800;
     color: #2c3e50;
+    margin: 0;
 }
 
-.car-details-row {
+/* Bottom details row */
+.car-card-details-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.9rem;
-    color: #666;
+    font-size: 0.85rem;
+    color: #777;
     border-top: 1px solid #f0f0f0;
-    padding-top: 10px;
+    padding-top: 12px;
     margin-top: 5px;
 }
 
+/* Badges and Buttons */
 .status-badge {
     align-self: flex-start;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: bold;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 800;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.status-available { background: #e6fffa; color: #2c7a7b; }
-.status-sold { background: #fff5f5; color: #c53030; }
+.status-available { background: #e6fffa; color: #234e52; border: 1px solid #b2f5ea; }
+.status-sold { background: #fff5f5; color: #822727; border: 1px solid #fed7d7; }
 
 .delete-btn {
     position: absolute;
