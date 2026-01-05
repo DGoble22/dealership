@@ -1,6 +1,10 @@
 import "./CarCard.css";
+import React, {useState} from "react";
+import UpdateCar from "../components/UpdateCar.jsx";
 
 const CarCard = ({car, isAdmin}) =>  {
+    const [showForm, setShowForm] = useState(false);
+
     const handleDelete = async (e) => {
         e.stopPropagation();
 
@@ -23,6 +27,11 @@ const CarCard = ({car, isAdmin}) =>  {
         }
     };
 
+    const handleSuccess = () => {
+        setShowForm(false);
+        window.location.reload();
+    }
+
     return (
             <div className="car-card">
                 {/* Header */}
@@ -31,7 +40,7 @@ const CarCard = ({car, isAdmin}) =>  {
                     {car.trim && <h2>{car.trim}</h2>}
                 </div>
 
-                {/* Stock Photo */}
+                {/* Photo */}
                 <div className="car-image">
                     <img src="https://picsum.photos/1200/800" alt="Car" />
                 </div>
@@ -61,10 +70,18 @@ const CarCard = ({car, isAdmin}) =>  {
                 {isAdmin && (
                 <div className="car-actions">
                     <button className="btn-delete" onClick={handleDelete}>X</button>
-                    <button className="btn-edit" onClick={() => alert('Edit coming soon!')}>
+                    <button className="btn-edit" onClick={() => setShowForm(true)}>
                         Edit
                     </button>
                 </div>
+                )}
+                {showForm && (
+                    <div className="modal-overlay">
+                        <div className="modal-content">
+                            <button onClick={() => setShowForm(false)}>Close X</button>
+                            <UpdateCar car={car} onSuccess={handleSuccess} />
+                        </div>
+                    </div>
                 )}
             </div>
     );

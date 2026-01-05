@@ -1,8 +1,8 @@
-import React, {useState} from "react";
-import "./AddCar.css";
+import React, { useState} from "react";
 
-export default function AddCar({onSuccess}) {
+export default function UpdateCar({car, onSuccess}) {
     const [formData, setFormData] = useState({
+        carid: car.carid,
         make: "",
         model: "",
         trim: "",
@@ -10,7 +10,7 @@ export default function AddCar({onSuccess}) {
         miles: "",
         price: "",
         vin: "",
-        status: "Available",
+        status: "",
         description: ""
     });
 
@@ -20,14 +20,28 @@ export default function AddCar({onSuccess}) {
         setFormData({...formData, [name]: value});
     }
 
-    // Helper function to handle form submission. It sends a POST request to the backend API with the form data. If the response indicates success, it alerts the user and calls the onSuccess callback to close the modal and refresh the inventory list. If there's an error, it logs it to the console.
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Filter out unused fields and keep carid
+        const filteredData = Object.fromEntries(
+            Object.entries(formData).filter(([key, value]) => {
+                    if (key === "carid") return true;
+                    return value !== "" && value !== null && value !== undefined;
+                })
+         );
+
+        // Check to see if there are values to update
+        if(Object.keys(filteredData).length <= 1){
+            alert("Please fill out at least one field to update.");
+            return;
+        }
+
         try{
-            const responce = await fetch("http://localhost/dealership-project/backend/api/add_car.php", {
+            const responce = await fetch("http://localhost/dealership-project/backend/api/update_car.php", {
                 method: "POST",
                 headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(formData),
+                body: JSON.stringify(filteredData),
             });
 
             const result = await responce.json();
@@ -49,23 +63,24 @@ export default function AddCar({onSuccess}) {
         <form className="add-car-form" onSubmit={handleSubmit}>
 
             {/* Form Header */ }
-            <h2>Vehicle Details</h2>
+            <h2>Update Vehicle Details</h2>
 
             {/* Form Grid: Make, Model, Trim, Year, Miles, Price, VIN, Status */ }
             <div className="form-grid">
-                <input type="text" name="make" placeholder="Make" onChange={handleChange} required />
-                <input type="text" name="model" placeholder="Model" onChange={handleChange} required />
-                <input type="text" name="trim" placeholder="Trim" onChange={handleChange} required />
-                <select name="year" onChange={handleChange} value={formData.year} required>
+                <input type="text" name="make" placeholder={car.make} onChange={handleChange} />
+                <input type="text" name="model" placeholder={car.model} onChange={handleChange} />
+                <input type="text" name="trim" placeholder={car.trim} onChange={handleChange} />
+                <select name="year" onChange={handleChange} value={formData.year} >
                     <option value="">Select Year</option>
                     {years.map((year) => (
                         <option key={year} value={year}>{year}</option>
                     ))}
                 </select>
-                <input type="number" name="miles" placeholder="Miles" onChange={handleChange} required />
-                <input type="number" name="price" placeholder="Price" onChange={handleChange} required />
-                <input type="text" name="vin" placeholder="Vin #" onChange={handleChange} required />
+                <input type="number" name="miles" placeholder={car.miles} onChange={handleChange} />
+                <input type="number" name="price" placeholder={car.price} onChange={handleChange} />
+                <input type="text" name="vin" placeholder={car.vin} onChange={handleChange} />
                 <select name="status" onChange={handleChange}>
+                    <option value=""></option>
                     <option value="Available">Available</option>
                     <option value="Pending">Pending</option>
                     <option value="Sold">Sold</option>
@@ -73,8 +88,8 @@ export default function AddCar({onSuccess}) {
             </div>
 
             {/* Extra Forum Elements: Description, submit */ }
-            <textarea name="description" placeholder="Vehicle Details" onChange={handleChange} required />
-            <button type="submit" className="submit-btn">Add to Inventory</button>
+            <textarea name="description" placeholder={car.description} onChange={handleChange} />
+            <button type="submit" className="submit-btn">Update</button>
         </form>
     );
 }
