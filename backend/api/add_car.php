@@ -21,12 +21,12 @@
         }
 
         //Sanitize Strings to prevent XSS
-        $make = htmlspecialchars(strip_tags($data["make"]));
-        $model = htmlspecialchars(strip_tags($data["model"]));
-        $trim = htmlspecialchars(strip_tags($data["trim"]));
-        $vin = htmlspecialchars(strip_tags($data["vin"]));
-        $status = htmlspecialchars(strip_tags($data["status"]));
-        $description = htmlspecialchars(strip_tags($data["description"]));
+        $make = trim(strip_tags($data["make"]));
+        $model = trim(strip_tags($data["model"]));
+        $trim = trim(strip_tags($data["trim"]));
+        $vin = trim(strip_tags($data["vin"]));
+        $status = trim(strip_tags($data["status"]));
+        $description = trim(strip_tags($data["description"]));
 
         //Number validation
         $year = filter_var($data["year"], FILTER_VALIDATE_INT);
