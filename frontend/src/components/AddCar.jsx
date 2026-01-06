@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import "./AddCar.css";
+import "./CarFourm.css";
 
 export default function AddCar({onSuccess}) {
     const [formData, setFormData] = useState({
@@ -46,7 +46,7 @@ export default function AddCar({onSuccess}) {
     const years = Array.from({ length: 2026 - 1950 + 1}, (_, i) => 2026 - i);
 
     return (
-        <form className="add-car-form" onSubmit={handleSubmit}>
+        <form className="car-form" onSubmit={handleSubmit}>
 
             {/* Form Header */ }
             <h2>Vehicle Details</h2>

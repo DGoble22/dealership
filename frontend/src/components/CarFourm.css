@@ -1,4 +1,8 @@
-.add-car-form {
+body.modal-open {
+    overflow: hidden;
+}
+
+.car-form {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -12,16 +16,16 @@
     gap: 10px;
 }
 
-.add-car-form input,
-.add-car-form select,
-.add-car-form textarea {
+.car-form input,
+.car-form select,
+.car-form textarea {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
 }
 
-.add-car-form textarea {
+.car-form textarea {
     height: 80px;
     resize: none;
 }

@@ -1,5 +1,6 @@
 import "./CarCard.css";
 import React, {useState} from "react";
+import {createPortal} from "react-dom";
 import UpdateCar from "../components/UpdateCar.jsx";
 
 const CarCard = ({car, isAdmin}) =>  {
@@ -75,13 +76,15 @@ const CarCard = ({car, isAdmin}) =>  {
                     </button>
                 </div>
                 )}
-                {showForm && (
-                    <div className="modal-overlay">
-                        <div className="modal-content">
-                            <button onClick={() => setShowForm(false)}>Close X</button>
+                {/* Modal overlay for update car using portal to document body */}
+                {showForm && createPortal(
+                    <div className="modal-overlay" onClick={() => setShowForm(false)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <button className="close-btn" onClick={() => setShowForm(false)}>Close X</button>
                             <UpdateCar car={car} onSuccess={handleSuccess} />
                         </div>
-                    </div>
+                    </div>,
+                    document.body
                 )}
             </div>
     );
