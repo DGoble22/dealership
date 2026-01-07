@@ -1,28 +1,66 @@
 .navbar {
-    display: flex;             /* Turns the navbar into a "row" */
-    justify-content: space-between; /* Pushes logo to left, links to center, status to right */
-    align-items: center;       /* Centers everything vertically */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 1rem 2rem;
-    background-color: #2c3e50; /* Dark blue "Admin" look */
+    background-color: #2c3e50;
     color: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.nav-logo {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 1px;
 }
 
 .nav-links {
     display: flex;
-    list-style: none;          /* Removes the bullet points */
-    gap: 20px;                 /* Spacing between the links */
+    list-style: none;
+    gap: 30px;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .nav-links a {
+    color: #e0e0e0;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-links a:hover {
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    text-decoration: none;     /* Removes the underline */
+}
+
+.nav-status {
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    color: #b0b0b0;
 }
 
 .status-indicator {
-    height: 10px;
-    width: 10px;
-    background-color: #2ecc71; /* Green "Online" dot */
+    height: 8px;
+    width: 8px;
+    background-color: #2ecc71;
     border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
+    margin-right: 8px;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }

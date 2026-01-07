@@ -7,6 +7,20 @@
     margin: 0 auto;
 }
 
+/* Uses direct child selector to mitigate propagation */
+.inventory-page > h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #3498db;
+    margin-left: auto;
+    margin-right: auto;
+    width: fit-content;
+}
+
 .add-plus-card {
     /* 1. Essential Flexbox rules */
     display: flex;
@@ -26,7 +40,7 @@
     transition: transform 0.2s, background-color 0.2s;
 }
 
-.add-plus-card h3 {
+.add-plus-card > h3 {
     margin: 0;
     color: #007bff;
     font-size: 1.2rem;
