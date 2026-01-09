@@ -37,6 +37,9 @@ frontend/*.local
 *.sln
 *.sw?
 
-# PHP / Backend specific (Optional but recommended)
+# PHP / Backend specific
 backend/vendor/
 .env
+
+# Ignore car photos
+backend/uploads/
