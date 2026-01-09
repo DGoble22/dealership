@@ -3,14 +3,13 @@
     require_once "../api_header.php";
 
     //Get raw data from stream need to read JSON sent from React
-    $raw_data = file_get_contents("php://input");
-    $data = json_decode($raw_data, True);
+    $data = $_POST;
 
     try{
         $db = new Database();
         $conn = $db->connection();
 
-        //Check for missing data (Includes everything at the moment)
+        // Validate required fields
         $required = ["make", "model", "trim", "year", "miles", "price", "vin", "status", "description"];
         foreach ($required as $field) {
             if(!isset($data[$field]) || $data[$field] === ""){
@@ -38,7 +37,8 @@
             exit;
         }
 
-        //SQL
+        // SQL for data upload
+        $conn->beginTransaction();
         $sql = "INSERT INTO Car (make, model, trim, year, miles, price, vin, status, description) 
                 VALUES (:make, :model, :trim, :year, :miles, :price, :vin, :status, :description)";
         $stmt = $conn->prepare($sql);
@@ -54,11 +54,35 @@
             "description" => $description
         ]);
 
+        $newCarId = $conn->lastInsertId();
+
+        // SQL for image upload
+        if (isset($_FILES["car_image"]) && $_FILES["car_image"]["error"] === UPLOAD_ERR_OK) {
+            $file = $_FILES["car_image"];
+
+            //Create a unique file name
+            $extention = pathinfo($file["name"], PATHINFO_EXTENSION);
+            $filename = "car_" . $newCarId . "_" . time() . "." . $extention;
+            $uploadDir = "../uploads/";
+            $targetPath = $uploadDir . $filename;
+
+            //Move file to uploads folder and put path into database
+            if (move_uploaded_file($file["tmp_name"], $targetPath)) {
+                $sql = "INSERT INTO Pictures (carid, image_path, picNo) VALUES (?,?,?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->execute([$newCarId, $targetPath, 1]); //Pic number 1 (to be changed)
+            } else{
+                throw new Exception("Error uploading file");
+            }
+        }
+
         //Success Response
+        $conn->commit();
         http_response_code(201); // 201 = Created
-        echo json_encode(["status" => "success", "message" => "Car added successfully", "id" => $conn->lastInsertId()]);
+        echo json_encode(["status" => "success", "message" => "Car added successfully", "id" => $conn->$newCarId]);
 
     } catch(PDOException $e) {
+        if (isset($conn)) {$conn->rollBack();}
         http_response_code(500);
         echo json_encode(array("status" => "error", "message" => "Database Error: " . $e->getMessage()));
     }

@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import "./CarFourm.css";
 
 export default function AddCar({onSuccess}) {
+    // Data to be sent to backend
+    const [file, setFile] = useState(null);
     const [formData, setFormData] = useState({
         make: "",
         model: "",
@@ -20,17 +22,27 @@ export default function AddCar({onSuccess}) {
         setFormData({...formData, [name]: value});
     }
 
-    // Helper function to handle form submission. It sends a POST request to the backend API with the form data. If the response indicates success, it alerts the user and calls the onSuccess callback to close the modal and refresh the inventory list. If there's an error, it logs it to the console.
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const data = new FormData(); // Container for form data and image file to send to backend
+
+        //Loops though formData and appends to new formData object
+        Object.keys(formData).forEach(key => {
+            data.append(key, formData[key]);
+        });
+
+        if(file){
+            data.append("car_image", file);
+        }
+
         try{
-            const responce = await fetch("http://localhost/dealership-project/backend/api/add_car.php", {
+            const response = await fetch("http://localhost/dealership-project/backend/api/add_car.php", {
                 method: "POST",
-                headers: {"Content-Type": "application/json"},
-                body: JSON.stringify(formData),
+                body: data,
             });
 
-            const result = await responce.json();
+            const result = await response.json();
             if (result.status === "success") {
                 alert(result.message);
                 onSuccess(); //Closes modal and refreshes the list
@@ -50,6 +62,16 @@ export default function AddCar({onSuccess}) {
 
             {/* Form Header */ }
             <h2>Vehicle Details</h2>
+
+            {/* Photo Upload */ }
+            <div className="file-imput-container">
+                <label>Vehicle Photo:</label>
+                <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setFile(e.target.files[0])}
+                />
+            </div>
 
             {/* Form Grid: Make, Model, Trim, Year, Miles, Price, VIN, Status */ }
             <div className="form-grid">
