@@ -43,7 +43,7 @@ const CarCard = ({car, isAdmin}) =>  {
 
                 {/* Photo */}
                 <div className="car-image">
-                    <img src="https://picsum.photos/1200/800" alt="Car" />
+                    <img src={car.image_path} alt="Car" />
                 </div>
 
                 {/* Details */}

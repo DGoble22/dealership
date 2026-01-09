@@ -8,12 +8,25 @@
         $conn = $db->connection();
 
         //SQL
-        $sql = "SELECT * FROM Car";
+        $sql = "SELECT c.*, p.image_path 
+                FROM Car c
+                LEFT JOIN Pictures p ON c.carid = p.carid AND p.picNo = 1
+                ORDER BY c.carid DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // image logic (& allows for modification of $result array)
+        foreach($result as &$car){
+            if($car["image_path"]){
+                $car["image_path"] = "http://localhost/dealership-project/backend/uploads/" . basename($car["image_path"]);
+            } else {
+                //Fallback image
+                $car["image_path"] = "http://localhost/dealership-project/backend/uploads/default_car_image.jpg";
+            }
+        }
 
         //output to JSON
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         echo json_encode(["status" => "success", "data" => $result]);
 
     } catch (PDOException $e) {

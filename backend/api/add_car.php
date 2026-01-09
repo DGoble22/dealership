@@ -62,7 +62,7 @@
 
             //Create a unique file name
             $extention = pathinfo($file["name"], PATHINFO_EXTENSION);
-            $filename = "car_" . $newCarId . "_" . time() . "." . $extention;
+            $filename = "car_" . $newCarId . "_pic_1" . "." . $extention;
             $uploadDir = "../uploads/";
             $targetPath = $uploadDir . $filename;
 
