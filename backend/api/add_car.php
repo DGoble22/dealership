@@ -25,7 +25,7 @@
         $trim = trim(strip_tags($data["trim"]));
         $vin = trim(strip_tags($data["vin"]));
         $status = trim(strip_tags($data["status"]));
-        $description = trim(strip_tags($data["description"]));
+        $description = strip_tags($data["description"]);
 
         //Number validation
         $year = filter_var($data["year"], FILTER_VALIDATE_INT);
