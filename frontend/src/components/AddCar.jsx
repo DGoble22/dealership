@@ -5,7 +5,7 @@ import getCroppedImage from "../cropImage.jsx";
 
 export default function AddCar({onSuccess}) {
     // Data to be sent to backend
-    const [file, setFile] = useState(null); // holds final cropped image
+    const [finalFiles, setFinalFiles] = useState([]); // holds final cropped image
     const [formData, setFormData] = useState({
         make: "",
         model: "",
@@ -19,16 +19,26 @@ export default function AddCar({onSuccess}) {
     });
 
     // image cropping states
-    const [imageSrc, setImageSrc] = useState(null); // holds original image before cropping
+    const [imageSrc, setImageSrc] = useState(null); // holds the image source for cropping
+    const [queue, setQueue] = useState([]); // holds original images before cropping
+    const [currentQueueIndex, setCurrentQueueIndex] = useState(0); // index of current image being cropped
     const [crop, setCrop] = useState({ x: 0, y: 0}); // cropping aspect ratio
     const [zoom, setZoom] = useState(1); // zoom level for cropping
     const [croppedAreaPixels, setCroppedAreaPixels] = useState(null); // pixel area to be cropped
 
+    const loadNextInQueue = (file) => {
+        const reader = new FileReader();
+        reader.addEventListener("load", () => setImageSrc(reader.result));
+        reader.readAsDataURL(file);
+    }
+
     const onFileChange = async (e) => {
         if (e.target.files && e.target.files.length > 0) {
-            const reader = new FileReader();
-            reader.addEventListener('load', () => setImageSrc(reader.result));
-            reader.readAsDataURL(e.target.files[0]);
+            const selected = Array.from(e.target.files);
+            setQueue(selected);
+            setFinalFiles([]); //reset if user selects new files before finishing cropping
+            setCurrentQueueIndex(0);
+            loadNextInQueue(selected[0]);
         }
     };
 
@@ -40,11 +50,32 @@ export default function AddCar({onSuccess}) {
         try{
             if(!imageSrc || !croppedAreaPixels) return;
             const croppedFile = await getCroppedImage(imageSrc, croppedAreaPixels);
-            setFile(croppedFile);
-            setImageSrc(null); // close the cropping interface
+
+            //add to final array
+            const updatedFinalFiles = [...finalFiles, croppedFile];
+            setFinalFiles(updatedFinalFiles);
+
+            //move to next in queue or reset if done
+            const nextIndex = currentQueueIndex + 1;
+            if(nextIndex < queue.length) {
+                setCurrentQueueIndex(nextIndex);
+                loadNextInQueue(queue[nextIndex]);
+                setZoom(1);
+            } else {
+                //ALl photos cropped, reset states
+                setImageSrc(null);
+                setQueue([]);
+                setZoom(1);
+            }
         } catch (e) {
             console.error(e);
         }
+    }
+
+    const handleCancel = () => {
+        setImageSrc(null);
+        setQueue([]);
+        setFinalFiles([]);
     }
 
     // Helper function to handle changes in form inputs. It updates the formData state with the new values as the user types or selects options. The function uses the name attribute of the input fields to determine which part of the formData to update.
@@ -55,14 +86,17 @@ export default function AddCar({onSuccess}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if(finalFiles.length === 0) {
+            alert("Please upload and crop at least one photo of the vehicle.");
+            return;
+        }
+
         const data = new FormData(); // Container for form data and image file to send to backend
+        Object.keys(formData).forEach(key => data.append(key, formData[key]));
 
-        //Loops though formData and appends to new formData object
-        Object.keys(formData).forEach(key => {
-            data.append(key, formData[key]);
-        });
-
-        if(file){ data.append("car_image", file); }
+        finalFiles.forEach((file) => {
+            data.append("images[]", file);
+        })
 
         try{
             const response = await fetch("http://localhost/dealership-project/backend/api/add_car.php", {
@@ -93,27 +127,35 @@ export default function AddCar({onSuccess}) {
 
             {/* Photo Upload */ }
             {imageSrc ? (
-                <div className="cropper-container" style={{position: 'relative', height: 400, width: '100%'}}>
-                    <Cropper
-                        image={imageSrc}
-                        crop={crop}
-                        zoom={zoom}
-                        aspect={16 / 9}
-                        onCropChange={setCrop}
-                        onZoomChange={setZoom}
-                        onCropComplete={onCropComplete}
-                    />
-                    <button type="button" onClick={handleSaveCrop} className="crop-save-btn">Crop Image</button>
+                <div className="cropper-section">
+                    <p>Cropping image {currentQueueIndex + 1} of {queue.length}</p>
+                    <div className="cropper-container" style={{position: 'relative', height: 400, width: '100%'}}>
+                        <Cropper
+                            image={imageSrc}
+                            crop={crop}
+                            zoom={zoom}
+                            aspect={16 / 9}
+                            onCropChange={setCrop}
+                            onZoomChange={setZoom}
+                            onCropComplete={onCropComplete}
+                        />
+                    </div>
+                    <div className="cropper-btns">
+                        <button type="button" onClick={handleSaveCrop} className="crop-save-btn">Save & Next</button>
+                        <button type="button" className="crop-cancel-btn" onClick={handleCancel}>Cancel & Restart</button>
+                    </div>
+
                 </div>
             ) : (
                 <div className="file-input-container">
-                    <label>Vehicle Photo:</label>
+                    <label>Vehicle Photos:</label>
                     <input
                         type="file"
                         accept="image/*"
+                        multiple
                         onChange={onFileChange}
                     />
-                    {file && <p style={{color: 'green', fontSize: '0.8rem'}}>Photo ready for upload</p>}
+                    {finalFiles.length > 0 && (<p style={{color: 'green', fontSize: '0.8rem'}}>{finalFiles.length} photos ready for upload</p>)}
                 </div>
             )}
 
@@ -138,8 +180,20 @@ export default function AddCar({onSuccess}) {
                 </select>
             </div>
 
-            {/* Extra Forum Elements: Description, submit */ }
+            {/* Extra Forum Elements: Description, cropped image preview, submit */ }
             <textarea name="description" placeholder="Vehicle Details" onChange={handleChange} required />
+            {finalFiles.length > 0 && !imageSrc && (
+                <div className="thumbnail-preview-strip" style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+                    {finalFiles.map((file, index) => (
+                        <img
+                            key={index}
+                            src={URL.createObjectURL(file)}
+                            alt="preview"
+                            style={{ width: '60px', height: '40px', objectFit: 'cover', borderRadius: '4px' }}
+                        />
+                    ))}
+                </div>
+            )}
             <button type="submit" className="submit-btn" disabled={imageSrc}>
                 { imageSrc ? "Finish cropping first!" : "Add to Inventory"}
             </button>

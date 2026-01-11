@@ -57,22 +57,28 @@
         $newCarId = $conn->lastInsertId();
 
         // SQL for image upload
-        if (isset($_FILES["car_image"]) && $_FILES["car_image"]["error"] === UPLOAD_ERR_OK) {
-            $file = $_FILES["car_image"];
-
-            //Create a unique file name
-            $extention = pathinfo($file["name"], PATHINFO_EXTENSION);
-            $filename = "car_" . $newCarId . "_pic_1" . "." . $extention;
+        if (isset($_FILES["images"]) && is_array($_FILES["images"]["name"])) {
+            $files = $_FILES["images"];
             $uploadDir = "../uploads/";
-            $targetPath = $uploadDir . $filename;
 
-            //Move file to uploads folder and put path into database
-            if (move_uploaded_file($file["tmp_name"], $targetPath)) {
-                $sql = "INSERT INTO Pictures (carid, image_path, picNo) VALUES (?,?,?)";
-                $stmt = $conn->prepare($sql);
-                $stmt->execute([$newCarId, $targetPath, 1]); //Pic number 1 (to be changed)
-            } else{
-                throw new Exception("Error uploading file");
+            //loop thorough each file
+            for($i = 0; $i < count($files["name"]); $i++){
+                if($files["error"][$i] === UPLOAD_ERR_OK){
+                    $extension = pathinfo($files["name"][$i], PATHINFO_EXTENSION);
+
+                    // generate unique filename
+                    $filename = "car_" . $newCarId . "_pic_" . ($i+1) . "." . $extension;
+                    $targetPath = $uploadDir . $filename;
+
+                    // move file to target directory and insert record in database
+                    if(move_uploaded_file($files["tmp_name"][$i], $targetPath)){
+                        $sql = "INSERT INTO Pictures (carid, picNo, image_path) VALUES (?, ?, ?)";
+                        $stmt = $conn->prepare($sql);
+                        $stmt->execute([$newCarId, $i+1, $targetPath]);
+                    } else {
+                        throw new exception("Failed to upload image");
+                    }
+                }
             }
         }
 
