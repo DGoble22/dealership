@@ -5,6 +5,39 @@ import UpdateCar from "../components/UpdateCar.jsx";
 
 const CarCard = ({car, isAdmin}) =>  {
     const [showForm, setShowForm] = useState(false);
+    const [showGallery, setShowGallery] = useState(false);
+    const [galleryImages, setGalleryImages] = useState([]);
+    const [currentIndex, setCurrentIndex] = useState(0);
+
+    const handleOpenGallery = async () => {
+        setShowGallery(true);
+        if(galleryImages.length > 0) return; //Gallery already loaded
+
+        try{
+            const response = await fetch(`http://localhost/dealership-project/backend/api/get_car_images.php?carid=${car.carid}`);
+            const result = await response.json();
+
+            if(result.status === "success") {
+                setGalleryImages(result.data);
+            } else {
+                alert("Could not load gallery: " + result.message);
+                setShowGallery(false);
+            }
+        } catch (e) {
+            console.error("Gallery fetch failed: ", e);
+        }
+    }
+
+    // Gallery navigation functions
+    const nextImage = (e) => {
+        e.stopPropagation();
+        setCurrentIndex((prev) => (prev === galleryImages.length - 1 ? 0 : prev + 1));
+    };
+
+    const prevImage = (e) => {
+        e.stopPropagation();
+        setCurrentIndex((prev) => (prev === 0 ? galleryImages.length - 1 : prev - 1));
+    };
 
     const handleDelete = async (e) => {
         e.stopPropagation();
@@ -42,7 +75,7 @@ const CarCard = ({car, isAdmin}) =>  {
                 </div>
 
                 {/* Photo */}
-                <div className="car-image">
+                <div className="car-image" onClick={handleOpenGallery}>
                     <img src={car.image_path} alt="Car" />
                 </div>
 
@@ -76,12 +109,50 @@ const CarCard = ({car, isAdmin}) =>  {
                     </button>
                 </div>
                 )}
+
                 {/* Modal overlay for update car using portal to document body */}
                 {showForm && createPortal(
                     <div className="modal-overlay" onClick={() => setShowForm(false)}>
                         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                             <button className="close-btn" onClick={() => setShowForm(false)}>Close X</button>
                             <UpdateCar car={car} onSuccess={handleSuccess} />
+                        </div>
+                    </div>,
+                    document.body
+                )}
+                {/* Modal overlay for car gallery*/}
+                {showGallery && createPortal(
+                    <div className="modal-overlay gallery-theme" onClick={() => setShowGallery(false)}>
+                        <div className="modal-content gallery-box" onClick={(e) => e.stopPropagation()}>
+                            <button className="gallery-close" onClick={() => setShowGallery(false)}>X</button>
+
+                            {/* Main images */}
+                            <div className="gallery-slider">
+                                {galleryImages.length > 0 ? (
+                                    <>
+                                        <img src={galleryImages[currentIndex].image_path} alt="Gallery" className="main-gallery-img"/>
+                                        {galleryImages.length > 1 && (
+                                            <div className="gallery-nav">
+                                                <button onClick={prevImage}>&#10094;</button>
+                                                <button onClick={nextImage}>&#10095;</button>
+                                            </div>
+
+                                        )}
+                                    </>
+                                ) : <p>Loading Gallery...</p>}
+                            </div>
+
+                            {/* Thumbnail Strip */}
+                            {galleryImages.length > 1 && (
+                                <div className="gallery-thumbnails">
+                                    {galleryImages.map((img, index) => (
+                                        <div key={index} className={`thumb-item ${index === currentIndex ? 'active-thumb' : ''}`} onClick={() => setCurrentIndex(index)} >
+                                            <img src={img.image_path} alt={`Thumbnail ${index + 1}`} className="thumb-img"/>
+                                        </div>
+
+                                        ))}
+                                </div>
+                            )}
                         </div>
                     </div>,
                     document.body
