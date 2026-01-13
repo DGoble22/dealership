@@ -10,7 +10,7 @@
         //SQL
         $sql = "SELECT c.*, p.image_path 
                 FROM Car c
-                LEFT JOIN Pictures p ON c.carid = p.carid AND p.picNo = 1
+                LEFT JOIN Pictures p ON c.carid = p.carid AND p.is_main = 1
                 ORDER BY c.carid DESC";
         $stmt = $conn->prepare($sql);
         $stmt->execute();
