@@ -24,7 +24,20 @@
             exit;
         }
 
-        //SQL
+        // SQL for Pictures table
+        $stmt = $conn->prepare("SELECT image_path FROM Pictures WHERE carid = ?");
+        $stmt->execute([$id]);
+        $images = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        //Loop to delete images from server
+        foreach($images as $image){
+            $file_path = $image["image_path"];
+            if(file_exists($file_path)){
+                unlink($file_path);
+            }
+        }
+
+        // SQL for Car table
         $sql = "DELETE FROM Car WHERE carid = :id LIMIT 1";
         $stmt = $conn->prepare($sql);
         $stmt->execute(["id" => $id]);
