@@ -71,10 +71,11 @@
                     $targetPath = $uploadDir . $filename;
 
                     // move file to target directory and insert record in database
+                    if($i == 0){$is_main = 1;} else {$is_main = 0;}
                     if(move_uploaded_file($files["tmp_name"][$i], $targetPath)){
-                        $sql = "INSERT INTO Pictures (carid, picNo, image_path) VALUES (?, ?, ?)";
+                        $sql = "INSERT INTO Pictures (carid, picNo, image_path, is_main) VALUES (?, ?, ?, ?)";
                         $stmt = $conn->prepare($sql);
-                        $stmt->execute([$newCarId, $i+1, $targetPath]);
+                        $stmt->execute([$newCarId, $i+1, $targetPath, $is_main]);
                     } else {
                         throw new exception("Failed to upload image");
                     }
