@@ -15,7 +15,7 @@
         }
 
         //SQL
-        $sql = "SELECT image_path FROM Pictures WHERE carid = ? ORDER BY picNo ASC";
+        $sql = "SELECT picid, image_path, is_main, picNo FROM Pictures WHERE carid = ? ORDER BY picNo ASC";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$carid]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);

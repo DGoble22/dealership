@@ -56,37 +56,11 @@
 
         $newCarId = $conn->lastInsertId();
 
-        // SQL for image upload
-        if (isset($_FILES["images"]) && is_array($_FILES["images"]["name"])) {
-            $files = $_FILES["images"];
-            $uploadDir = "../uploads/";
-
-            //loop thorough each file
-            for($i = 0; $i < count($files["name"]); $i++){
-                if($files["error"][$i] === UPLOAD_ERR_OK){
-                    $extension = pathinfo($files["name"][$i], PATHINFO_EXTENSION);
-
-                    // generate unique filename
-                    $filename = "car_" . $newCarId . "_pic_" . ($i+1) . "." . $extension;
-                    $targetPath = $uploadDir . $filename;
-
-                    // move file to target directory and insert record in database
-                    if($i == 0){$is_main = 1;} else {$is_main = 0;}
-                    if(move_uploaded_file($files["tmp_name"][$i], $targetPath)){
-                        $sql = "INSERT INTO Pictures (carid, picNo, image_path, is_main) VALUES (?, ?, ?, ?)";
-                        $stmt = $conn->prepare($sql);
-                        $stmt->execute([$newCarId, $i+1, $targetPath, $is_main]);
-                    } else {
-                        throw new exception("Failed to upload image");
-                    }
-                }
-            }
-        }
 
         //Success Response
         $conn->commit();
         http_response_code(201); // 201 = Created
-        echo json_encode(["status" => "success", "message" => "Car added successfully", "id" => $conn->$newCarId]);
+        echo json_encode(["status" => "success", "message" => "Car added successfully", "carid" => $newCarId]);
 
     } catch(PDOException $e) {
         if (isset($conn)) {$conn->rollBack();}

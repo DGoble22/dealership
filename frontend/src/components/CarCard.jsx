@@ -2,12 +2,14 @@ import "./CarCard.css";
 import React, {useState} from "react";
 import {createPortal} from "react-dom";
 import UpdateCar from "../components/UpdateCar.jsx";
+import ImageManager from "../components/ImageManager.jsx";
 
 const CarCard = ({car, isAdmin}) =>  {
     const [showForm, setShowForm] = useState(false);
     const [showGallery, setShowGallery] = useState(false);
     const [galleryImages, setGalleryImages] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [showImageManager, setShowImageManager] = useState(false);
 
     const handleOpenGallery = async () => {
         setShowGallery(true);
@@ -47,7 +49,7 @@ const CarCard = ({car, isAdmin}) =>  {
                 const response = await fetch(`http://localhost/dealership-project/backend/api/delete_car.php`, {
                 method: "POST",
                     headers: {"Content-Type": "application/json"},
-                    body: JSON.stringify({id: car.carid}),
+                    body: JSON.stringify({carid: car.carid}),
             });
             const result = await response.json();
 
@@ -100,14 +102,13 @@ const CarCard = ({car, isAdmin}) =>  {
                     </div>
                 )}
 
-                {/* Action Buttons */}
+                {/* Admin Action Buttons */}
                 {isAdmin && (
-                <div className="car-actions">
-                    <button className="btn-delete" onClick={handleDelete}>X</button>
-                    <button className="btn-edit" onClick={() => setShowForm(true)}>
-                        Edit
-                    </button>
-                </div>
+                    <div className="car-actions">
+                        <button className="btn-delete" onClick={handleDelete}>X</button>
+                        <button className="btn-edit" onClick={() => setShowForm(true)}>Specs</button>
+                        <button className="btn-edit" onClick={() => setShowImageManager(true)}>Photos</button>
+                    </div>
                 )}
 
                 {/* Modal overlay for update car using portal to document body */}
@@ -120,6 +121,20 @@ const CarCard = ({car, isAdmin}) =>  {
                     </div>,
                     document.body
                 )}
+
+                {showImageManager && createPortal(
+                    <div className="modal-overlay" onClick={() => setShowImageManager(false)}>
+                        <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+                            <ImageManager carId={car.carid} onDone={() => {
+                                setShowImageManager(false);
+                                setGalleryImages([]);
+                                window.location.reload();
+                            }} />
+                        </div>
+                    </div>,
+                    document.body
+                )}
+
                 {/* Modal overlay for car gallery*/}
                 {showGallery && createPortal(
                     <div className="modal-overlay gallery-theme" onClick={() => setShowGallery(false)}>
