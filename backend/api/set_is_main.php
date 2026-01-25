@@ -21,9 +21,11 @@
     unset($data['carid']);
     unset($data['picid']);
 
+    $conn = null;
     try {
         $db = new Database();
         $conn = $db->connection();
+        $conn->beginTransaction();
 
         // set all images to not main for the car
         $stmt = $conn->prepare("UPDATE Pictures SET is_main = 0 WHERE carid = ?");
@@ -33,9 +35,12 @@
         $stmt = $conn->prepare("UPDATE Pictures SET is_main = 1 WHERE picid = ?");
         $stmt->execute([$picid]);
 
+        $conn->commit();
+        http_response_code(200);
         echo json_encode(["status" => "success", "message" => "Cover image updated"]);
 
     } catch (Exception $e) {
+        if($conn && $conn->inTransaction()){$conn->rollBack();}
         http_response_code(500);
         echo json_encode(["status" => "error", "message" => $e->getMessage()]);
 }

@@ -15,7 +15,7 @@
         }
 
         //SQL
-        $sql = "SELECT picid, image_path, is_main, picNo FROM Pictures WHERE carid = ? ORDER BY picNo ASC";
+        $sql = "SELECT picid, image_path, is_main, picNo FROM Pictures WHERE carid = ? ORDER BY picNo";
         $stmt = $conn->prepare($sql);
         $stmt->execute([$carid]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -31,6 +31,7 @@
         }
 
         //Output to JSON
+        http_response_code(200);
         echo json_encode(["status" => "success", "data" => $result]);
 
     } catch (PDOException $e) {

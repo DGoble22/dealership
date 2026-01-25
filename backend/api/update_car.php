@@ -19,10 +19,12 @@
     if($carid === false){echo json_encode(["status" => "error", "message" => "Car id integer expected"]); exit(); }
     unset($data['carid']);
 
+    $conn = null;
     try{
         //Database connection
         $db = new Database();
         $conn = $db->connection();
+        $conn->beginTransaction();
 
         //Dynamic loop with validation and sanitization
         $intColumns = ['year', 'price', 'miles'];
@@ -63,7 +65,10 @@
         } else {
             echo json_encode(["status" => "error", "message" => "No Changes Made"]);
         }
+        http_response_code(200);
+        $conn->commit();
     } catch (PDOException $e) {
+        if($conn && $conn->inTransaction()){$conn->rollBack();}
         http_response_code(500);
         echo json_encode(array("status" => "error", "message" => "Database Error: " . $e->getMessage()));
     }
