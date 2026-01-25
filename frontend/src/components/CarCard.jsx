@@ -122,6 +122,7 @@ const CarCard = ({car, isAdmin}) =>  {
                     document.body
                 )}
 
+                {/* Modal overlay for image manager */}
                 {showImageManager && createPortal(
                     <div className="modal-overlay" onClick={() => setShowImageManager(false)}>
                         <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -145,14 +146,22 @@ const CarCard = ({car, isAdmin}) =>  {
                             <div className="gallery-slider">
                                 {galleryImages.length > 0 ? (
                                     <>
+                                        <div
+                                            className="gallery-click-zone left"
+                                            onClick={prevImage}
+                                        />
                                         <img src={galleryImages[currentIndex].image_path} alt="Gallery" className="main-gallery-img"/>
+                                        <div
+                                            className="gallery-click-zone right"
+                                            onClick={nextImage}
+                                        />
                                         {galleryImages.length > 1 && (
                                             <div className="gallery-nav">
                                                 <button onClick={prevImage}>&#10094;</button>
                                                 <button onClick={nextImage}>&#10095;</button>
                                             </div>
-
                                         )}
+
                                     </>
                                 ) : <p>Loading Gallery...</p>}
                             </div>

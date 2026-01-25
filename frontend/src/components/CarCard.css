@@ -137,6 +137,19 @@
     padding: 30px;
 }
 
+/* Gallery-specific modal content override */
+.modal-content.gallery-box {
+    max-width: 80vw;
+    width: 80vw;
+    max-height: 80vh;
+    height: 80vh;
+    padding: 0;
+    background: #111;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
 .close-btn {
     position: absolute;
     top: 15px;
@@ -155,7 +168,7 @@
 }
 
 .gallery-box {
-    max-width: 900px; /* Wider for the slider */
+    max-width: 1200px; /* Wider for the slider */
     width: 95%;
     background: #111; /* Dark content area */
     padding: 0;      /* Remove padding so image hits edges */
@@ -165,17 +178,22 @@
 .gallery-slider {
     position: relative;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    flex: 1;
+    min-height: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #000;
+    padding: 0;
+    aspect-ratio: 16 / 9; /* Force 16:9 ratio */
 }
 
 .main-gallery-img {
     max-width: 100%;
     max-height: 100%;
-    object-fit: contain; /* Shows full photo without cropping */
+    width: auto;
+    height: auto;
+    object-fit: contain;
 }
 
 .gallery-nav button {
@@ -194,6 +212,7 @@
     align-items: center;
     justify-content: center;
     transition: background 0.3s;
+    z-index: 2100;
 }
 
 .gallery-nav button:hover {
@@ -214,20 +233,20 @@
     display: flex;
     gap: 10px;
     padding: 15px;
-    background: #1a1a1a; /* Slightly lighter than the black background */
-    overflow-x: auto;   /* Scroll horizontally if too many images */
-    scrollbar-width: thin; /* For Firefox */
-    scrollbar-color: #555 #1a1a1a;
+    background: #1a1a1a;
+    overflow-x: auto;
+    flex-shrink: 0;
+    height: 120px; /* Fixed height instead of max-height */
 }
 
 /* Individual Thumbnail Wrapper */
 .thumb-item {
-    flex: 0 0 80px; /* Don't shrink, stay 80px wide */
+    flex: 0 0 120px;
     aspect-ratio: 16 / 9;
     cursor: pointer;
     border-radius: 4px;
     overflow: hidden;
-    opacity: 0.5; /* Dim non-active images */
+    opacity: 0.5;
     transition: all 0.2s ease;
     border: 2px solid transparent;
 }
@@ -268,7 +287,7 @@
     /* Styling (Red Circle like Delete button) */
     background: #dc3545; /* Bright Red */
     color: white;
-    border: 1px solid white; /* Thick white border to make it pop */
+    border: 0.5px solid white; /* Thick white border to make it pop */
     border-radius: 50%; /* Perfect circle */
     width: 44px;  /* Nice big target area */
     height: 44px;
@@ -292,4 +311,27 @@
     background: #c82333; /* Darker red on hover */
     transform: scale(1.1); /* Grow slightly */
     box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+}
+
+.gallery-click-zone {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40%;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.gallery-click-zone.left {
+    left: 0;
+    cursor: w-resize;
+}
+
+.gallery-click-zone.right {
+    right: 0;
+    cursor: e-resize;
+}
+
+.gallery-click-zone:hover {
+    background: rgba(0, 0, 0, 0.05);
 }
