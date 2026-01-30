@@ -4,7 +4,6 @@ import Navbar from "./components/Navbar.jsx";
 //Page Imports
 import Inventory from "./pages/Inventory.jsx";
 import AboutUs from "./pages/AboutUs.jsx";
-import CarDetails from "./pages/CarDetails.jsx";
 import {useState} from "react";
 
 //Main dealership function
