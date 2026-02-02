@@ -40,23 +40,60 @@
 
 /* Info Section */
 .car-info {
-    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    padding: 30px 40px;
+    background: #fff;
+    border-bottom: 1px solid #eee;
+}
+
+.car-info p {
+    /* FIXED: Made background darker and border more visible */
+    background: #eaeff2;
+    padding: 20px 10px;
+    border-radius: 12px;
+    border: 1px solid #d1d9e0;
+    text-align: center;
+    margin: 0;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    justify-content: center;
+}
+
+.car-info strong {
+    font-size: 0.75rem;
+    color: #888;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    letter-spacing: 0.5px;
+}
+
+.car-info span {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #222;
+}
+
+/* FIXED: Added this class container to give the title breathing room */
+.car-header {
+    padding: 25px 40px 10px 40px;
 }
 
 .car-header h1 {
     margin: 0;
-    font-size: 1.3rem;
-    color: #111;
+    font-size: 2.8rem;
+    color: #1a1a1a;
+    font-weight: 800;
 }
 
 .car-header h2 {
-    margin: 0;
-    font-size: 1rem;
-    color: #666;
-    font-weight: 400;
+    margin: 5px 0 0;
+    font-size: 1.2rem;
+    color: #007bff;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-weight: 600;
 }
 
 /* Status Badges */
@@ -68,10 +105,25 @@
     text-transform: uppercase;
 }
 
+/* Description Section - Original */
 .car-description {
-    white-space: pre-wrap;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
+    padding: 40px;
+    background: #fff;
+}
+
+.car-description h3 {
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+    border-bottom: 2px solid #007bff;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.car-description p {
+    line-height: 1.7;
+    color: #444;
+    font-size: 1.1rem;
+    margin: 0;
 }
 
 .status-available { background: #e6fffa; color: #234e52; }
@@ -85,6 +137,8 @@
     display: flex;
     justify-content: flex-end;
     border-top: 1px solid #eee;
+    /* FIXED: Added gap to separate the buttons */
+    gap: 15px;
 }
 
 .btn-delete {
@@ -334,4 +388,34 @@
 
 .gallery-click-zone:hover {
     background: rgba(0, 0, 0, 0.05);
+}
+
+/* Mobile Responsiveness - Original */
+@media (max-width: 850px) {
+    .car-info {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 15px;
+    }
+    .gallery-slider {
+        height: 350px;
+    }
+}
+
+@media (max-width: 500px) {
+    .car-header h1 {
+        font-size: 2rem;
+    }
+
+    .car-info {
+        grid-template-columns: 1fr;
+    }
+
+    .car-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .btn-edit {
+        width: 100%;
+    }
 }
