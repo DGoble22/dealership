@@ -40,27 +40,25 @@
     color: white;
 }
 
-.nav-status {
-    display: flex;
-    align-items: center;
-    font-size: 0.9rem;
-    color: #b0b0b0;
+.nav-button {
+    background: darkgray;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.status-indicator {
-    height: 8px;
-    width: 8px;
-    background-color: #2ecc71;
-    border-radius: 50%;
-    margin-right: 8px;
-    animation: pulse 2s infinite;
+.nav-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    background: gray;
 }
 
-@keyframes pulse {
-    0%, 100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0.5;
-    }
+.nav-button:active {
+    transform: translateY(0);
 }
