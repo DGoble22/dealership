@@ -48,12 +48,29 @@
             exit;
         }
 
-        // TODO: Create session or JWT token here
+        // JWT cookie creation
+        $env = parse_ini_file("/../config/.env");
+        $secret_key = $env["JWT_SECRET"];
+
+        $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
+        $base64UrlHeader = base64_encode($header);
+
+        $issuedAt = time();
+        $expirationTime = $issuedAt + 3600; // Token valid for 1 hour
+        $payload = json_encode(['userid' => $user["userid"], 'iat' => $issuedAt, 'exp' => $expirationTime]);
+        $base64UrlPayload = base64_encode($payload);
+
+        $signature = hash_hmac('sha256', $base64UrlHeader . "." . $base64UrlPayload, $secret_key, true);
+        $base64UrlSignature = base64_encode($signature);
+
+        $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
+
         $conn->commit();
         http_response_code(200);
         echo json_encode([
             "status" => "success",
             "message" => "Login successful",
+            "token" => $jwt
         ]);
 
     } catch (PDOException $e) {
